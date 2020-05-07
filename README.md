@@ -17,7 +17,7 @@ $ pip3 install -r requirements.txt
 
 ## Usage
 ##### Copy Server
-- Default SERVER IP is localhost
+- Prompts for SERVER IP if none is specified
 - Default port is specified in constants.py
 - Run with following:
 ```bash
