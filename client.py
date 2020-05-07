@@ -1,18 +1,18 @@
 """
 client.py
 
-- Constantly poll clipboard for changes (clipboard module)
-    - Upon change, send clipboard state to server
+- Constantly poll clipboard for changes (pyperclip module)
+    - Upon change, send clipboard state to specified server
 """
 import sys
 import time
 import requests
 import pyperclip
-from config import PROTOCOL, PORT, ENDPOINT, KEY
+from constants import PROTOCOL, PORT, ENDPOINT, KEY
 
 
 def usage(status):
-    print(f"Usage: {sys.argv[0]} [SERVER] [-p PORT]")
+    print(f"Usage: {sys.argv[0]} [SERVER] [-p PORT]", file=sys.stderr)
     sys.exit(status)
 
 
@@ -29,7 +29,6 @@ def post_clipboard(url, clipboard):
         KEY: clipboard
     }
     resp = requests.post(url, json=data)
-
     return resp.ok
 
 

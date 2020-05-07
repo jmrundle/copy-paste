@@ -1,9 +1,8 @@
 """
 server.py
 
-- Bind incoming messages to callback
+- Listen for incoming messages on PORT at ENDPOINT of HTTP server
     - Upon new message, update clipboard
-
 """
 import json
 import sys
@@ -11,7 +10,7 @@ import pyperclip
 import tornado.web
 import tornado.ioloop
 from socket import error as socket_error
-from config import PORT, ENDPOINT, KEY
+from constants import PORT, ENDPOINT, KEY
 
 
 class ClipHandler(tornado.web.RequestHandler):
@@ -62,4 +61,3 @@ if __name__ == "__main__":
 
     print(f"Running Server on port {PORT}")
     tornado.ioloop.IOLoop.instance().start()
-
