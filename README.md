@@ -4,14 +4,10 @@ copy text from one server, paste to another
 ## Installation
 1. Make sure python3 and pip are installed
 2. Install source files or clone repo on **both** servers, then download dependencies
-##### Copy Server
+##### Copy Server *AND* Paste Server
 ```bash
 $ git clone https://github.com/jmrundle/copy-paste.git
-$ pip3 install -r requirements.txt
-```
-##### Paste Server
-```bash
-$ git clone https://github.com/jmrundle/copy-paste.git
+$ cd copy-paste
 $ pip3 install -r requirements.txt
 ```
 
