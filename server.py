@@ -7,57 +7,51 @@ server.py
 import json
 import sys
 import pyperclip
-import tornado.web
-import tornado.ioloop
-from socket import error as socket_error
-from constants import PORT, ENDPOINT, KEY
+from http.server import BaseHTTPRequestHandler, HTTPServer
+from constants import PORT, KEY
 
 
-class ClipHandler(tornado.web.RequestHandler):
-    def post(self):
-        self.set_header("Cache-control", "no-cache")
-
+class ClipHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_success()
+    
+    def do_POST(self):
         try:
-            response = json.loads(self.request.body)
-        except ValueError:
-            return self.error(400, "Unable to parse request")
+            content_length = int(self.headers['Content-Length'])
+            body = self.rfile.read(content_length)
+            response = json.loads(body)
+        except (KeyError, ValueError):
+            return self.send_error(400, "Unable to parse request")
 
         try:
             clip = response[KEY]
         except KeyError:
-            return self.error(400, "Missing clipboard argument")
+            return self.send_error(400, "Missing clipboard argument")
 
         print("Received: ", clip)
         print("----------------")
 
         try:
             pyperclip.copy(clip)
-        except Exception:
-            return self.error(500, "Unable to copy text to clipboard")
+        except pyperclip.PyperclipException:
+            return self.send_error(500, "Unable to copy text to clipboard")
 
-        self.set_status(200)
+        self.send_success()
 
-    def error(self, status, message):
-        self.clear()
-        self.set_status(status)
-        self.write(json.dumps({
-            'status': status,
-            'error': message,
-        }))
+    def log_message(self, format, *args):
+        # turn off logging
+        return
+
+    def send_success(self):
+        self.send_response(200)
+        self.end_headers()
 
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
-        PORT = sys.argv[1]
-
-    application = tornado.web.Application([
-        (ENDPOINT, ClipHandler),
-    ])
-
-    try:
-        application.listen(PORT)
-    except socket_error:
-        print(f"Unable to listen on port {PORT}")
+        PORT = int(sys.argv[1])
 
     print(f"Running Server on port {PORT}")
-    tornado.ioloop.IOLoop.instance().start()
+
+    server = HTTPServer(('', PORT), ClipHandler)
+    server.serve_forever()

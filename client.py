@@ -8,7 +8,7 @@ import sys
 import time
 import requests
 import pyperclip
-from constants import PROTOCOL, PORT, ENDPOINT, KEY
+from constants import PROTOCOL, PORT, KEY
 
 
 def usage(status):
@@ -48,6 +48,8 @@ if __name__ == "__main__":
                 usage(1)
             PORT = sys.argv[argind+1]
             argind += 1
+        elif arg == "-h":
+            usage(0)
         else:
             SERVER = arg
 
@@ -59,9 +61,9 @@ if __name__ == "__main__":
     """
     Verify connection
     """
-    url = f"{PROTOCOL}://{SERVER}:{PORT}{ENDPOINT}"
+    url = f"{PROTOCOL}://{SERVER}:{PORT}"
 
-    print(f"Attempting to connect to {SERVER} with {url}")
+    print(f"Attempting to connect to {SERVER} via {url}")
 
     if not test_connection(url):
         print(f"Unable to connect to {url}")
